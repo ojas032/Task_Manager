@@ -7,41 +7,89 @@ const port=process.env.PORT||3002
 
 app.use(express.json())
 
-app.post('/users',(req,res)=>{
+app.post('/users',async (req,res)=>{
     const user=new Users(
         req.body
     )
-    user.save().then((result)=>{
-        console.log(result);
-    }).catch((err)=>{
-        console.log(err);
-    })
-    res.send("testing!")
+
+    try{
+    const result = await user.save();
+    res.status(201).send(result)
+    }
+    catch(e){
+    res.status(400).send("Testing")
+    }
+
+    
 })
 
-app.get('/users/:id',(req,res)=>{
-    console.log("hekjdjkslfls")
-    res.status(200).send("tesing")
-})
-
-app.get('/users',(req,res)=>{
-    Users.find({}).then((result)=>{
-        res.status(200).send(result)
-    }).catch((err)=>{
-        res.status(500).send(err)
-    })
+app.get('/users/:id',async (req,res)=>{
+    try{
+    const result = await Users.findById(req.params.id)
+    res.status(200).send(result)
+    }
+    catch(err){
+    res.status(401).send(err)
+    }
 })
 
 
-app.post('/task',(req,res)=>{
+app.get('/users', async (req,res)=>{
+    try{
+    const result= await Users.find({})
+    res.status(200).send(result)
+    }catch(err){
+    res.status(500).send(err)
+    }
+})
+
+
+app.post('/task',async (req,res)=>{
     const task=new Task(req.body);
-    task.save().then((result)=>{
-        res.status(201).send("Task reveived")
-    }).catch((err)=>{
+    try{
+    const result=await task.save()
+        res.status(201).send(result)
+    }catch(err){
         res.status(400).send("Error reported")
-    })
+    }
 })
 
+
+app.get('/task',async (req,res)=>{
+    try{
+    const result=await Task.find({})
+    res.status(200).send(result)
+    }
+    catch(err){
+        res.status(500).send(err)
+    }
+})
+
+app.get('/task/:id',async (req,res)=>{
+    const _id=req.params.id
+
+    try{
+        const result= Task.findById(_id)
+        res.status(200).send(result)
+    }
+    catch(err){
+        res.status(500).send(err)
+    }
+})
+
+app.patch('/users/:id',async (req,res)=>{
+    const _id=req.params.id;
+    try{
+    const user= await Users.findByIdAndUpdate(_id,req.body,{new:true,runValidators:true})
+    if(!user)
+    res.status(401).send("Error")
+    else
+    res.status(200).send(result)
+    }
+    catch(err){
+    res.status(401).send(err);
+    }
+})
 
 
 app.listen(port,()=>{
