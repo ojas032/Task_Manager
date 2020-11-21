@@ -43,6 +43,38 @@ app.get('/users', async (req,res)=>{
     }
 })
 
+app.patch('/users/:id',async (req,res)=>{
+    const _id=req.params.id;
+    try{
+    const user= await Users.findByIdAndUpdate(_id,req.body,{new:true,runValidators:true})
+    if(!user)
+    res.status(401).send("Error")
+    else
+    res.status(200).send(result)
+    }
+    catch(err){
+    res.status(401).send(err);
+    }
+})
+
+
+app.delete('/users/:id',async (req,res)=>{
+    const _id=req.params.id;
+    try{
+        const user=await Users.findByIdAndDelete(_id)
+        if(!user){
+            res.status(400).send("error");
+        }
+        res.status(200).send(user)
+    }
+    catch(e){
+        res.status(500).send(e)
+    }
+})
+
+
+
+
 
 app.post('/task',async (req,res)=>{
     const task=new Task(req.body);
@@ -77,19 +109,21 @@ app.get('/task/:id',async (req,res)=>{
     }
 })
 
-app.patch('/users/:id',async (req,res)=>{
-    const _id=req.params.id;
+app.delete('/task/:id',async (req,res)=>{
+    const _id=req.params.id
+
     try{
-    const user= await Users.findByIdAndUpdate(_id,req.body,{new:true,runValidators:true})
-    if(!user)
-    res.status(401).send("Error")
-    else
-    res.status(200).send(result)
+        const task=Task.findByIdAndDelete(_id)
+        if(!task){
+            res.status(400).send("error")
+        }
+        res.status(200).send(task)
     }
-    catch(err){
-    res.status(401).send(err);
+    catch(e){
+        res.status(500).send(err)
     }
 })
+
 
 
 app.listen(port,()=>{
