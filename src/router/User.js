@@ -87,8 +87,8 @@ router.get('/users/:id', auth ,async (req,res)=>{
 })
 
 
-router.patch('/users/:id',async (req,res)=>{
-    const _id=req.params.id;
+router.patch('/users/me',auth,async (req,res)=>{
+    const _id=req.user._id;
     try{
     const user= await Users.findByIdAndUpdate(_id,req.body,{new:true,runValidators:true})
     if(!user)
@@ -102,14 +102,11 @@ router.patch('/users/:id',async (req,res)=>{
 })
 
 
-router.delete('/users/:id',async (req,res)=>{
-    const _id=req.params.id;
+router.delete('/users/me',auth,async (req,res)=>{
+  
     try{
-        const user=await Users.findByIdAndDelete(_id)
-        if(!user){
-            res.status(400).send("error");
-        }
-        res.status(200).send(user)
+        req.user.remove();
+        res.status(200).send("Deleted")
     }
     catch(e){
         res.status(500).send(e)

@@ -23,14 +23,19 @@ app.listen(port,()=>{
     console.log("System is up on port "+port)
 })
 
-const jwt=require('jsonwebtoken')
+
 
 const myfunction = async ()=>{
 
-    const load=jwt.sign({_id:"1234"},"thisisthenewcourse")
     
-    //console.log(load)
 
+    // const task=await Task.findById('5fc4146ce7d9ce1fbe4b59a6')
+    // console.log(task)
+    // await task.populate('owner').execPopulate()
+    // console.log(task.owner)
+
+
+   
 }
 
-myfunction()
+//myfunction()
